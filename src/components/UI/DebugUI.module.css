@@ -1,0 +1,54 @@
+.container {
+  position: fixed;
+  top: 96px; /* positioned comfortably below the luxury Navbar */
+  left: 28px;
+  z-index: 20;
+  background: rgba(7, 7, 7, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 18px;
+  border-radius: 4px;
+  min-width: 180px;
+  font-family: 'Inter', sans-serif;
+  color: #f5f0e8;
+  pointer-events: none;
+}
+
+.header {
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c9a96e;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+  padding-bottom: 4px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  line-height: 1.8;
+}
+
+.label {
+  color: rgba(245, 240, 232, 0.45);
+  font-weight: 400;
+}
+
+.value {
+  color: #f5f0e8;
+  font-family: monospace;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .container {
+    top: 80px;
+    left: 20px;
+    min-width: 150px;
+    padding: 10px 14px;
+  }
+}

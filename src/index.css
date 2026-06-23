@@ -1,0 +1,141 @@
+/* ─── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+/* ─── CSS Custom Properties ────────────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --color-bg:           radial-gradient(circle at center, #111111 0%, #050505 100%);
+  --color-bg-fallback:  #070707;
+  --color-surface:      #0d0d0d;
+  --color-border:       rgba(255, 255, 255, 0.08);
+  --color-text-primary: #f5f0e8;
+  --color-text-muted:   rgba(245, 240, 232, 0.45);
+  --color-accent:       #c9a96e;
+  --color-accent-dim:   rgba(201, 169, 110, 0.15);
+  --color-gold:         #d4a853;
+  --color-white:        #ffffff;
+
+  /* Typography */
+  --font-sans:   'Inter', system-ui, sans-serif;
+  --font-serif:  'Cormorant Garamond', Georgia, serif;
+
+  /* Spacing */
+  --section-height: 100vh;
+
+  /* Timing */
+  --transition-fast:   150ms ease;
+  --transition-medium: 300ms ease;
+  --transition-slow:   600ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Z-layers */
+  --z-canvas:  0;
+  --z-content: 10;
+  --z-ui:      20;
+  --z-loader:  100;
+}
+
+/* ─── Reset ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: auto; /* Lenis handles smooth scrolling */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--color-bg);
+  background-color: var(--color-bg-fallback);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Remove Lenis default body overflow override conflict */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ─── Canvas Layer ─────────────────────────────────────────────────────────── */
+#canvas-container {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-canvas);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background: var(--color-bg);
+}
+
+/* ─── Content Layer ────────────────────────────────────────────────────────── */
+#content-layer {
+  position: relative;
+  z-index: var(--z-content);
+  pointer-events: none; /* children opt-in */
+}
+
+#content-layer * {
+  pointer-events: auto;
+}
+
+/* ─── Scroll Container ─────────────────────────────────────────────────────── */
+#scroll-container {
+  position: relative;
+}
+
+.scroll-section {
+  position: relative;
+  width: 100%;
+  height: var(--section-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Typography Utilities ─────────────────────────────────────────────────── */
+.text-serif { font-family: var(--font-serif); }
+.text-sans  { font-family: var(--font-sans); }
+
+.text-accent { color: var(--color-accent); }
+.text-muted  { color: var(--color-text-muted); }
+
+/* ─── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-dim);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+/* ─── Selection ────────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--color-accent-dim);
+  color: var(--color-accent);
+}
+
+/* ─── Responsive Helpers ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    font-size: 14px;
+  }
+}
