@@ -5,8 +5,7 @@ import * as THREE from 'three'
 import { useSceneAnimation } from '../components/SceneManager/SceneAnimationController'
 import { getLocalProgress, easeInOutCubic } from '../utils/progress'
 
-// Set CDN path for KTX2 loader transcoder
-useKTX2.setTranscoderPath("https://cdn.jsdelivr.net/gh/mrdoob/three.js@r154/examples/jsm/libs/basis/");
+// KTX2 loader transcoder path is passed directly into the useKTX2 hook call below.
 
 /**
  * Scene1
@@ -42,7 +41,7 @@ export default function Scene1({ scale = 1 }) {
   const [waterNormalTex, terrainNormalTex] = useKTX2([
     "/water-normal.ktx2",
     "/terrain_normal.ktx2"
-  ])
+  ], "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r154/examples/jsm/libs/basis/")
 
   // Setup Texture Wrapping
   useMemo(() => {
