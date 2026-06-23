@@ -1,0 +1,62 @@
+.button {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 10px 12px;
+  border-radius: 999px;
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.45);
+  color: #25d366;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 300ms ease;
+}
+
+.button:hover {
+  background: #25d366;
+  color: #03200f;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.35);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.18);
+  flex-shrink: 0;
+}
+
+.button:hover .icon {
+  background: rgba(3, 32, 15, 0.18);
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .button {
+    bottom: 20px;
+    left: 20px;
+    padding: 8px;
+  }
+
+  /* Collapse to icon-only on small screens to avoid clutter */
+  .label {
+    display: none;
+  }
+}

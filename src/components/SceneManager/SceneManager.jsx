@@ -31,8 +31,9 @@ export default function SceneManager({ isMobileDevice }) {
   return (
     <>
       {/* ── Environment Background & Fog ── */}
-      <color attach="background" args={["#020617"]} />
-      <fogExp2 attach="fog" color="#020617" density={0.012} />
+      {/* Base colour matches the sky horizon so the dome seam is invisible */}
+      <color attach="background" args={["#0d2350"]} />
+      <fogExp2 attach="fog" color="#11295a" density={0.0085} />
 
       {/* Camera Path Controller (interpolates keyframes based on progress) */}
       <CameraPathController isMobileDevice={isMobileDevice} />
@@ -42,14 +43,14 @@ export default function SceneManager({ isMobileDevice }) {
       <Particles />
 
       {/* ── Cinematic Studio Lighting ── */}
-      {/* Soft ambient lighting for filling shadows */}
-      <ambientLight intensity={0.05} />
+      {/* Soft ambient lighting for filling shadows (lifted so geometry reads) */}
+      <ambientLight intensity={0.18} />
 
       {/* Key Light (Cinematic Moon) casting high-quality soft shadows */}
       <directionalLight
         position={[8, 15, 8]}
-        intensity={0.2}
-        color="#1d4ed8"
+        intensity={0.55}
+        color="#6f9bff"
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -60,7 +61,7 @@ export default function SceneManager({ isMobileDevice }) {
       </directionalLight>
 
       {/* Studio Environment Map for luxury reflections */}
-      <Environment preset="night" environmentIntensity={0.15} />
+      <Environment preset="night" environmentIntensity={0.3} />
 
       {/* ── Debug Helpers ── */}
       {DEBUG && (

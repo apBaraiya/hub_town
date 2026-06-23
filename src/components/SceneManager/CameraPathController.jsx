@@ -9,13 +9,16 @@ function lerp(start, end, t) {
   return start + (end - start) * t
 }
 
-// Target camera positions and target lookAt points at discrete scroll keyframes
+// Target camera positions and lookAt points at discrete scroll keyframes.
+// Continuous glide — the camera responds from the very first scroll so the
+// motion always feels connected to scrolling (no flat dead-zone at the start).
 const KEYFRAMES = [
-  { progress: 0.00, position: [0, 0.5, 14], target: [0, 1.4, 0] },
-  { progress: 0.25, position: [0, 0.5, 14], target: [0, 1.4, 0] },
-  { progress: 0.50, position: [0, 0.5, 8],  target: [0, 1.7, 0] },
-  { progress: 0.75, position: [0, 0.5, 4],  target: [0, 1.7, 0] },
-  { progress: 1.00, position: [0, 0.5, 2],  target: [0, 1.5, 0] },
+  { progress: 0.00, position: [0, 0.7, 12.0], target: [0, 1.4, 0] },
+  { progress: 0.20, position: [0, 0.9, 10.0], target: [0, 1.5, 0] },
+  { progress: 0.40, position: [0, 1.1, 8.0],  target: [0, 1.6, 0] },
+  { progress: 0.60, position: [0, 1.0, 6.2],  target: [0, 1.6, 0] },
+  { progress: 0.80, position: [0, 0.9, 4.6],  target: [0, 1.5, 0] },
+  { progress: 1.00, position: [0, 0.8, 3.6],  target: [0, 1.4, 0] },
 ]
 
 /**
@@ -30,9 +33,9 @@ export default function CameraPathController({ isMobileDevice }) {
   const { camera } = useThree()
   const { progress } = useSceneAnimation()
 
-  const targetPosRef = useRef(new THREE.Vector3(0, 0.5, 14))
+  const targetPosRef = useRef(new THREE.Vector3(0, 0.7, 12))
   const targetLookRef = useRef(new THREE.Vector3(0, 1.4, 0))
-  const currentPosRef = useRef(new THREE.Vector3(0, 0.5, 18)) // Start slightly offset for zoom-in glide on load
+  const currentPosRef = useRef(new THREE.Vector3(0, 0.7, 15.5)) // Start slightly offset for zoom-in glide on load
   const currentLookRef = useRef(new THREE.Vector3(0, 1.4, 0))
   const frameSkipClock = useRef(0)
   const isInitialized = useRef(false)
@@ -70,7 +73,12 @@ export default function CameraPathController({ isMobileDevice }) {
     const tx = lerp(startKF.position[0], endKF.position[0], easedT)
     const ty = lerp(startKF.position[1], endKF.position[1], easedT)
     const tz = lerp(startKF.position[2], endKF.position[2], easedT)
-    targetPosRef.current.set(tx, ty, tz)
+
+    // Continuous idle drift — keeps the home screen alive even without scrolling
+    const t = state.clock.getElapsedTime()
+    const driftX = Math.sin(t * 0.25) * 0.18
+    const driftY = Math.sin(t * 0.18) * 0.10
+    targetPosRef.current.set(tx + driftX, ty + driftY, tz)
 
     const lx = lerp(startKF.target[0], endKF.target[0], easedT)
     const ly = lerp(startKF.target[1], endKF.target[1], easedT)

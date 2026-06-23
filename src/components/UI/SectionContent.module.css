@@ -30,7 +30,7 @@
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: #38bdf8;
   margin-bottom: 24px;
 }
 
@@ -38,7 +38,7 @@
   display: inline-block;
   width: 24px;
   height: 1px;
-  background: #c9a96e;
+  background: #38bdf8;
   flex-shrink: 0;
 }
 
@@ -48,7 +48,7 @@
   font-size: clamp(40px, 7vw, 100px); /* 40-60px mobile, 80-120px desktop */
   font-weight: 300;
   line-height: 1.05;
-  color: #f5f0e8;
+  color: #eef3fb;
   margin-bottom: 28px;
   letter-spacing: -0.02em;
   text-align: left;
@@ -83,7 +83,7 @@
   font-size: 0.9rem;
   font-weight: 300;
   line-height: 1.8;
-  color: rgba(245, 240, 232, 0.55);
+  color: rgba(238, 243, 251, 0.55);
   max-width: 480px;
   margin-bottom: 32px;
   text-align: left;
@@ -98,9 +98,9 @@
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: #38bdf8;
   background: transparent;
-  border: 1px solid rgba(201, 169, 110, 0.4);
+  border: 1px solid rgba(56, 189, 248, 0.4);
   padding: 12px 28px;
   border-radius: 2px;
   cursor: pointer;
@@ -113,9 +113,9 @@
 }
 
 .ctaButton:hover {
-  background: #c9a96e;
+  background: #38bdf8;
   color: #050505;
-  border-color: #c9a96e;
+  border-color: #38bdf8;
 }
 
 .ctaArrow {
@@ -127,8 +127,61 @@
   transform: translateX(4px);
 }
 
+/* Project stats row */
+.statsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 36px;
+  margin-top: 44px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  padding-left: 18px;
+}
+
+.statItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: rgba(56, 189, 248, 0.4);
+}
+
+.statCount {
+  font-family: var(--font-sans);
+  font-size: 2.2rem;
+  font-weight: 300;
+  line-height: 1;
+  color: #eef3fb;
+  letter-spacing: -0.02em;
+}
+
+.statLabel {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(238, 243, 251, 0.45);
+}
+
 /* Responsive configurations */
 @media (max-width: 768px) {
+  .statsRow {
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .statCount {
+    font-size: 1.6rem;
+  }
+
   .section {
     justify-content: center; /* Centered on mobile */
     padding: 0 6vw;

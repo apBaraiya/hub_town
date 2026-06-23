@@ -2,12 +2,12 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: radial-gradient(circle at center, #0a0a0a 0%, #050505 100%);
+  background: radial-gradient(circle at 50% 60%, #0e2350 0%, #060c1e 70%);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 900ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .overlay.hidden {
@@ -20,15 +20,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 32px;
+  animation: loader-in 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes loader-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .brand {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.1rem;
-  font-weight: 300;
-  letter-spacing: 0.45em;
-  color: rgba(245, 240, 232, 0.55);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em; /* offset trailing letter-spacing so it stays centred */
+  color: #eef3fb;
   text-transform: uppercase;
 }
 
@@ -36,24 +43,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
 }
 
 .percent {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 4.5rem;
-  font-weight: 300;
-  color: #c9a96e;
+  font-family: 'Inter', sans-serif;
+  font-size: 3.4rem;
+  font-weight: 200;
+  color: #eef3fb;
   line-height: 1;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 26px rgba(56, 189, 248, 0.35);
+  font-variant-numeric: tabular-nums;
 }
 
 .bar {
-  width: 240px;
-  height: 1px;
+  width: 260px;
+  height: 2px;
   background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
   position: relative;
   overflow: hidden;
-  margin-top: 8px;
 }
 
 .fill {
@@ -61,15 +71,17 @@
   top: 0;
   left: 0;
   height: 100%;
-  background: #c9a96e;
-  transition: width 100ms linear;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #1d6fe0, #38bdf8);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.6);
+  transition: width 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .status {
   font-family: 'Inter', sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 400;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.3);
+  color: rgba(238, 243, 251, 0.35);
 }

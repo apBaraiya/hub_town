@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { storyData } from '../../data/storyData'
+import { storyData, projectRegions } from '../../data/storyData'
 import { useSceneAnimation } from '../SceneManager/SceneAnimationController'
-import { getLocalProgress, easeInOutCubic } from '../../utils/progress'
 import { isMobile } from '../../utils/device'
 import { getPrefersReducedMotion } from '../../utils/accessibility'
 import styles from './SectionContent.module.css'
@@ -13,19 +12,16 @@ import Hero from '../Hero/Hero'
 
 /**
  * SectionContent
- * Renders all 4 story sections' HTML content layers.
- * Features mouse parallax, elastic magnetic CTA buttons, and entrance reveals.
+ * Renders every story section's HTML content layer. Section-count driven —
+ * works for any number of sections in `storyData`. Features mouse parallax,
+ * elastic magnetic CTA buttons, and entrance reveals.
  */
 export default function SectionContent({ activeSection }) {
   const { progress } = useSceneAnimation()
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-  const ranges = [
-    { start: 0.00, end: 0.25 },
-    { start: 0.25, end: 0.50 },
-    { start: 0.50, end: 0.75 },
-    { start: 0.75, end: 1.00 },
-  ]
+  const N = storyData.length
+  const stepSpan = N > 1 ? 1 / (N - 1) : 1 // progress distance between section centres
 
   // Track cursor position normalized from -0.5 to 0.5 for subtle parallax
   useEffect(() => {
@@ -45,33 +41,22 @@ export default function SectionContent({ activeSection }) {
   return (
     <div className={styles.sectionsWrapper}>
       {storyData.map((s, idx) => {
-        const range = ranges[idx]
-        const localP = getLocalProgress(progress, range.start, range.end)
-        const easedP = easeInOutCubic(localP)
+        const center = idx * stepSpan          // progress at which this section is centred
+        const delta = progress - center        // signed distance from centre
         const isActive = activeSection === s.id
 
-        // Calculate scroll-driven properties
-        const headingY = easedP * -50
-        const bodyOpacity = Math.max(0, 1 - easedP * 1.5)
-        const ctaY = (1 - easedP) * 35
-        const ctaOpacity = Math.max(0, Math.min(1, easedP * 2.0))
+        // Scroll-driven parallax (0 at centre, grows as you scroll away)
+        const headingY = Math.max(-60, Math.min(60, delta * -260))
+        const ctaY = isActive ? 0 : 24
 
-        // Parallax style for content boxes (desktop only)
+        // Mouse parallax for content boxes (desktop only)
         const parallaxStyle = (isMobile() || getPrefersReducedMotion())
           ? {}
-          : {
-              transform: `translate3d(${mousePos.x * 16}px, ${mousePos.y * 16}px, 0)`,
-            }
+          : { transform: `translate3d(${mousePos.x * 16}px, ${mousePos.y * 16}px, 0)` }
 
-        // Custom Hero section overlay override
-        if (s.id === 1) {
-          return (
-            <Hero
-              key={s.id}
-              active={isActive}
-              opacity={bodyOpacity}
-            />
-          )
+        // Custom Hero section overlay (data-driven)
+        if (s.type === 'hero') {
+          return <Hero key={s.id} data={s} active={isActive} />
         }
 
         return (
@@ -115,12 +100,7 @@ export default function SectionContent({ activeSection }) {
 
               {/* Description with Reveal */}
               <Reveal active={isActive} delay={0.15}>
-                <p
-                  className={styles.description}
-                  style={{ opacity: isActive ? bodyOpacity : 0 }}
-                >
-                  {s.description}
-                </p>
+                <p className={styles.description}>{s.description}</p>
               </Reveal>
 
               {/* CTA Button wrapped in Magnetic wrapper */}
@@ -128,10 +108,7 @@ export default function SectionContent({ activeSection }) {
                 <Magnetic>
                   <button
                     className={styles.ctaButton}
-                    style={{
-                      transform: `translateY(${ctaY}px)`,
-                      opacity: isActive ? ctaOpacity : 0,
-                    }}
+                    style={{ transform: `translateY(${ctaY}px)` }}
                     data-cursor="explore"
                   >
                     <span className="magnetic-text">
@@ -140,6 +117,20 @@ export default function SectionContent({ activeSection }) {
                   </button>
                 </Magnetic>
               </Reveal>
+
+              {/* Project region cards — only on the Projects section */}
+              {s.type === 'projects' && (
+                <Reveal active={isActive} delay={0.35}>
+                  <div className={styles.statsRow}>
+                    {projectRegions.map((r) => (
+                      <div key={r.region} className={styles.statItem}>
+                        <span className={styles.statCount}>{r.count}</span>
+                        <span className={styles.statLabel}>{r.region}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Reveal>
+              )}
             </div>
           </section>
         )

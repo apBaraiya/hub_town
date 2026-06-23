@@ -13,8 +13,11 @@ import SceneManager     from './components/SceneManager/SceneManager'
 import SectionContent   from './components/UI/SectionContent'
 import ProgressBar      from './components/UI/ProgressBar'
 import SectionLabel     from './components/UI/SectionLabel'
-import DebugUI          from './components/UI/DebugUI'
 import CustomCursor     from './components/UI/CustomCursor'
+import WhatsAppButton   from './components/UI/WhatsAppButton'
+
+// Section data (single source of truth)
+import { storyData } from './data/storyData'
 
 // Hooks
 import { useLenis }         from './hooks/useLenis'
@@ -30,7 +33,7 @@ import { SceneAnimationController } from './components/SceneManager/SceneAnimati
  *   2. HTML content layer (z-index: 10)
  *      ├─ Navbar
  *      ├─ Scroll container (4 × 100vh sections)
- *      └─ UI overlays (ProgressBar, SectionLabel, DebugUI)
+ *      └─ UI overlays (ProgressBar, SectionLabel)
  *   3. Loading screen (z-index: 100)
  *   4. Custom Cursor overlay (z-index: 9999)
  */
@@ -45,23 +48,8 @@ export default function App() {
   // ── Scroll progress tracking (pins the scroll-container) ────────────────
   const { progress, activeSection } = useScrollProgress(scrollContainerRef)
 
-  // ── Calculate Active Zone and Section Index ──
-  let zone = 'ZONE_1'
-  let sectionIndex = 0
-
-  if (progress < 0.25) {
-    zone = 'ZONE_1'
-    sectionIndex = 0
-  } else if (progress < 0.50) {
-    zone = 'ZONE_2'
-    sectionIndex = 1
-  } else if (progress < 0.75) {
-    zone = 'ZONE_3'
-    sectionIndex = 2
-  } else {
-    zone = 'ZONE_4'
-    sectionIndex = 3
-  }
+  const totalSections = storyData.length
+  const stepSpan = totalSections > 1 ? 1 / (totalSections - 1) : 1
 
   // ── Page Intro Sequence Timeline ──
   useEffect(() => {
@@ -148,30 +136,52 @@ export default function App() {
         {/* Vertical progress indicator */}
         <ProgressBar />
 
-        {/* Diagnostic Debug HUD */}
-        <DebugUI progress={progress} zone={zone} sectionIndex={sectionIndex} />
-
-        {/* Section Label Overlay */}
+        {/* Section Label Overlay — generated from section data */}
         <div className="fade-in-ui" style={{ position: 'fixed', bottom: '48px', right: '48px', zIndex: 20 }}>
-          {[
-            { number: 1, title: 'Overview', range: '0% – 25%' },
-            { number: 2, title: 'Exterior', range: '25% – 50%' },
-            { number: 3, title: 'Interiors', range: '50% – 75%' },
-            { number: 4, title: 'Location', range: '75% – 100%' },
-          ].map((sec) => (
-            <SectionLabel
-              key={sec.number}
-              number={sec.number}
-              title={sec.title}
-              range={sec.range}
-              active={activeSection === sec.number}
-            />
-          ))}
+          {storyData.map((s, idx) => {
+            const title = s.label.includes('—') ? s.label.split('—')[1].trim() : s.label
+            const pct = Math.round(idx * stepSpan * 100)
+            return (
+              <SectionLabel
+                key={s.id}
+                number={s.id}
+                title={title}
+                range={`${pct}%`}
+                active={activeSection === s.id}
+              />
+            )
+          })}
         </div>
 
         {/* Scrollable container — 4 × 100vh */}
         <div id="scroll-container" ref={scrollContainerRef} style={{ opacity: 0 }}>
           <SectionContent activeSection={activeSection} />
+        </div>
+
+        {/* Floating "Chat with us" WhatsApp CTA */}
+        <WhatsAppButton />
+
+        {/* Footer credit line — fades in on the final section */}
+        <div
+          className="fade-in-ui"
+          style={{
+            position: 'fixed',
+            bottom: '48px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 20,
+            fontFamily: 'var(--font-sans)',
+            fontSize: '0.6rem',
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'rgba(245, 240, 232, 0.35)',
+            opacity: activeSection === totalSections ? 1 : 0,
+            transition: 'opacity 600ms ease',
+            pointerEvents: 'none',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          © {new Date().getFullYear()} Your Company · Add your footer line here
         </div>
       </div>
 

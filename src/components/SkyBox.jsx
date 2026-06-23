@@ -12,18 +12,19 @@ export default function SkyBox() {
 
   const uniforms = useMemo(
     () => ({
-      uColor1: { value: new THREE.Color("#0a1f5c") },
+      // Horizon (brightest, bottom) → zenith (darkest, top)
+      uColor1: { value: new THREE.Color("#2c548c") }, // horizon glow
       uColor1Stop: { value: 1.0 },
-      uColor2: { value: new THREE.Color("#06153a") },
-      uColor2Stop: { value: 0.75 },
-      uColor3: { value: new THREE.Color("#020617") },
-      uColor3Stop: { value: 0.69 },
-      uColor4: { value: new THREE.Color("#020617") },
-      uColor4Stop: { value: 0.61 },
+      uColor2: { value: new THREE.Color("#193a72") },
+      uColor2Stop: { value: 0.80 },
+      uColor3: { value: new THREE.Color("#0e2350") },
+      uColor3Stop: { value: 0.64 },
+      uColor4: { value: new THREE.Color("#081632") }, // zenith
+      uColor4Stop: { value: 0.50 },
       tVoronoi: { value: voronoiTexture },
       uPixelRatio: { value: window.devicePixelRatio || 1 },
-      uStarsThreshold: { value: 0.363 },
-      uStarsStrength: { value: 2.0 },
+      uStarsThreshold: { value: 0.38 },
+      uStarsStrength: { value: 1.6 },
       uStarsScale: { value: 18.2 },
       uRadius: { value: 300 },
       uResolution: { value: new THREE.Vector2(size.width, size.height) },

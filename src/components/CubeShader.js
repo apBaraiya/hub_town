@@ -544,6 +544,7 @@ ${normals_tangents_vert_pars}
 varying vec2 vUv;
 varying vec3 vPosition;
 varying vec3 vWorldNormal;
+varying vec4 vWorldPosition;
 varying vec4 vScreenSpacePosition;
 
 void main(){
@@ -554,6 +555,8 @@ void main(){
   ${normals_tangents_vert}
 
   vWorldNormal = normalize((modelMatrix * vec4(objectNormal, 0.0)).xyz);
+  vec4 worldPosition = modelMatrix * transformedPosition;
+  vWorldPosition = worldPosition;
   vec4 mvPosition = modelViewMatrix * transformedPosition;
   gl_Position = projectionMatrix * mvPosition;
   vScreenSpacePosition = gl_Position;

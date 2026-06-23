@@ -4,15 +4,15 @@
 /* ─── CSS Custom Properties ────────────────────────────────────────────────── */
 :root {
   /* Colors */
-  --color-bg:           radial-gradient(circle at center, #111111 0%, #050505 100%);
-  --color-bg-fallback:  #070707;
-  --color-surface:      #0d0d0d;
+  --color-bg:           radial-gradient(circle at 50% 115%, #16294f 0%, #070d20 62%);
+  --color-bg-fallback:  #0a1428;
+  --color-surface:      #0d1730;
   --color-border:       rgba(255, 255, 255, 0.08);
-  --color-text-primary: #f5f0e8;
-  --color-text-muted:   rgba(245, 240, 232, 0.45);
-  --color-accent:       #c9a96e;
-  --color-accent-dim:   rgba(201, 169, 110, 0.15);
-  --color-gold:         #d4a853;
+  --color-text-primary: #eef3fb;
+  --color-text-muted:   rgba(238, 243, 251, 0.45);
+  --color-accent:       #38bdf8;
+  --color-accent-dim:   rgba(56, 189, 248, 0.15);
+  --color-gold:         #38bdf8;
   --color-white:        #ffffff;
 
   /* Typography */
