@@ -21,8 +21,7 @@ export default function Scene1({ scale = 1 }) {
   const groupRef = useRef()
   const cubeRef = useRef()
   const waterRef = useRef()
-  const terrainRightRef = useRef()
-  const terrainLeftRef = useRef()
+  const terrainRef = useRef()
   const pointLightRef = useRef()
 
   const { progress: globalProgress } = useSceneAnimation()
@@ -61,7 +60,7 @@ export default function Scene1({ scale = 1 }) {
   // Clean up geometries on unmount
   useEffect(() => {
     return () => {
-      const refs = [cubeRef, waterRef, terrainRightRef, terrainLeftRef]
+      const refs = [cubeRef, waterRef, terrainRef]
       refs.forEach((ref) => {
         if (ref.current) {
           ref.current.geometry?.dispose()
@@ -111,8 +110,7 @@ export default function Scene1({ scale = 1 }) {
 
       const bgMats = [
         waterRef.current?.material,
-        terrainRightRef.current?.material,
-        terrainLeftRef.current?.material,
+        terrainRef.current?.material,
       ].filter(Boolean)
 
       bgMats.forEach((mat) => {
@@ -209,103 +207,90 @@ export default function Scene1({ scale = 1 }) {
   })
 
   return (
-    <group ref={groupRef} scale={scale} rotation={[0, Math.PI, 0]}>
-      {/* ── Scene Specific Lights ── */}
-      {visibleRef.current && (
-        <>
-          {/* Subtle blue light emitted from the cube (stays active) */}
-          <pointLight
-            ref={pointLightRef}
-            position={[0, 1.4, 0]}
-            color="#38bdf8"
-            intensity={25}
-            distance={20}
-            decay={1.5}
-          />
-          {/* (Left/right rim spotlights removed per design) */}
-        </>
-      )}
+    <>
+      {/* ════════════════════════════════════════════════════════════════
+          Cube group — UNCHANGED orientation (the cube look the user approved)
+      ════════════════════════════════════════════════════════════════ */}
+      <group ref={groupRef} scale={scale} rotation={[0, Math.PI, 0]}>
+        {/* ── Scene Specific Lights ── */}
+        {visibleRef.current && (
+          <>
+            {/* Subtle blue light emitted from the cube (stays active) */}
+            <pointLight
+              ref={pointLightRef}
+              position={[0, 1.4, 0]}
+              color="#38bdf8"
+              intensity={25}
+              distance={20}
+              decay={1.5}
+            />
+          </>
+        )}
 
-      {/* ── Holographic Grid Cube (Always Visible) ── */}
-      {nodes["hero-cube"] && (
-        <group
-          ref={cubeRef}
-          position={[0, 1.4, 0]}
-          rotation={[0, Math.PI / 4, 0]}
-        >
-          <HolographicCube />
+        {/* ── Holographic Grid Cube (Always Visible) ── */}
+        {nodes["hero-cube"] && (
+          <group
+            ref={cubeRef}
+            position={[0, 1.4, 0]}
+            rotation={[0, Math.PI / 4, 0]}
+          >
+            <HolographicCube />
+          </group>
+        )}
+      </group>
+
+      {/* ════════════════════════════════════════════════════════════════
+          Landscape group — model's ORIGINAL designed layout (no ad-hoc
+          offsets / rotation). Combined terrain mesh placed at its baked
+          transform forms the full mountain valley; water is a flat lake.
+      ════════════════════════════════════════════════════════════════ */}
+      {bgVisibleRef.current && (
+        <group scale={scale}>
+          {/* ── Reflective Water Lake (flat, fades out after 25%) ── */}
+          {nodes.water && (
+            <mesh ref={waterRef} geometry={nodes.water.geometry}>
+              <MeshReflectorMaterial
+                blur={[300, 90]}
+                resolution={1024}
+                mixBlur={0.5}
+                mixStrength={4.5}
+                depthScale={1.2}
+                minDepthThreshold={0.4}
+                maxDepthThreshold={1.4}
+                color="#0a1f4c"
+                roughness={0.18}
+                metalness={0.85}
+                normalMap={waterNormalTex}
+                normalScale={new THREE.Vector2(0.18, 0.18)}
+                transparent={true}
+                opacity={bgOpacityRef.current}
+              />
+            </mesh>
+          )}
+
+          {/* ── Full Mountain Valley (combined terrain at baked position) ── */}
+          {nodes.terrain && (
+            <mesh
+              ref={terrainRef}
+              geometry={nodes.terrain.geometry}
+              position={[-29.378, 2.231, -4.334]}
+            >
+              <meshStandardMaterial
+                color="#26467f"
+                emissive="#143a73"
+                emissiveIntensity={0.75}
+                roughness={0.9}
+                metalness={0.1}
+                transparent={true}
+                opacity={bgOpacityRef.current}
+                normalMap={terrainNormalTex}
+                normalScale={new THREE.Vector2(0.22, 0.22)}
+              />
+            </mesh>
+          )}
         </group>
       )}
-
-      {/* ── Reflective Water Surface (Fades out after 25%) ── */}
-      {nodes.water && bgVisibleRef.current && (
-        <mesh
-          ref={waterRef}
-          geometry={nodes.water.geometry}
-          position={[-29.378, 2.231, 1.119]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          scale={5.0}
-        >
-          <MeshReflectorMaterial
-            blur={[400, 100]}
-            resolution={512}
-            mixBlur={0.2}
-            mixStrength={2.0}
-            depthScale={1.0}
-            minDepthThreshold={0.5}
-            maxDepthThreshold={1.3}
-            color="#0a1c44"
-            roughness={0.08}
-            metalness={0.9}
-            normalMap={waterNormalTex}
-            normalScale={new THREE.Vector2(0.06, 0.06)}
-            transparent={true}
-            opacity={bgOpacityRef.current}
-          />
-        </mesh>
-      )}
-
-      {/* ── Stylized Navy Landscapes (Fade out after 25%) ── */}
-      {nodes.terrain_right && bgVisibleRef.current && (
-        <mesh
-          ref={terrainRightRef}
-          geometry={nodes.terrain_right.geometry}
-          position={[-29.378 - 4.2, 2.231, 1.119]}
-        >
-          <meshStandardMaterial
-            color="#20396b"
-            emissive="#0c1e44"
-            emissiveIntensity={0.5}
-            roughness={0.85}
-            metalness={0.2}
-            transparent={true}
-            opacity={bgOpacityRef.current}
-            normalMap={terrainNormalTex}
-            normalScale={new THREE.Vector2(0.12, 0.12)}
-          />
-        </mesh>
-      )}
-
-      {nodes.terrain_left && bgVisibleRef.current && (
-        <mesh
-          ref={terrainLeftRef}
-          geometry={nodes.terrain_left.geometry}
-          position={[-29.378 + 4.2, 2.231, 1.119]}
-        >
-          <meshStandardMaterial
-            color="#20396b"
-            emissive="#0c1e44"
-            emissiveIntensity={0.5}
-            roughness={0.85}
-            metalness={0.2}
-            transparent={true}
-            opacity={bgOpacityRef.current}
-            normalMap={terrainNormalTex}
-            normalScale={new THREE.Vector2(0.12, 0.12)}
-          />
-        </mesh>
-      )}
-    </group>
+    </>
   )
 }
 

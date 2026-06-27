@@ -7,7 +7,6 @@ import { isMobile }     from './utils/device'
 import { getPrefersReducedMotion } from './utils/accessibility'
 
 // Components
-import Loader           from './components/Loader/Loader'
 import Navbar           from './components/Navbar/Navbar'
 import SceneManager     from './components/SceneManager/SceneManager'
 import SectionContent   from './components/UI/SectionContent'
@@ -40,7 +39,7 @@ import { SceneAnimationController } from './components/SceneManager/SceneAnimati
 export default function App() {
   const scrollContainerRef = useRef(null)
   const mobile = isMobile()
-  const [introStarted, setIntroStarted] = useState(false)
+  const [introStarted] = useState(true)
 
   // ── Smooth scroll ───────────────────────────────────────────────────────
   useLenis()
@@ -184,11 +183,6 @@ export default function App() {
           © {new Date().getFullYear()} Your Company · Add your footer line here
         </div>
       </div>
-
-      {/* ════════════════════════════════════════════════════════════════
-          Layer 3: Loading Screen
-      ════════════════════════════════════════════════════════════════ */}
-      <Loader onLoaded={() => setIntroStarted(true)} />
     </SceneAnimationController>
   )
 }

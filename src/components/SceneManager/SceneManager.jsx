@@ -1,4 +1,4 @@
-import { Environment } from '@react-three/drei'
+import { Environment, Lightformer } from '@react-three/drei'
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
 import { EffectComposer, Bloom, DepthOfField, Vignette, ToneMapping } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
@@ -60,8 +60,20 @@ export default function SceneManager({ isMobileDevice }) {
         <orthographicCamera attach="shadow-camera" args={[-10, 10, 10, -10, 0.1, 50]} />
       </directionalLight>
 
-      {/* Studio Environment Map for luxury reflections */}
-      <Environment preset="night" environmentIntensity={0.3} />
+      {/* Cool moonlight rim — grazes the mountain slopes from the upper-left to
+          give the snow-lit / cyan highlight look (cube is a shader, unaffected) */}
+      <directionalLight position={[-7, 11, 5]} intensity={0.9} color="#8fb6ff" />
+      {/* Dim cyan fill from the opposite side so both ridges read with depth */}
+      <directionalLight position={[6, 6, -4]} intensity={0.35} color="#3f74d6" />
+
+      {/* Self-contained night environment (no remote HDR fetch) — provides
+          subtle cool reflections on the water/metallic surfaces */}
+      <Environment resolution={256} environmentIntensity={0.3}>
+        <Lightformer intensity={0.6} color="#1b3a7a" position={[0, 6, -6]} scale={[12, 12, 1]} />
+        <Lightformer intensity={0.25} color="#0a1730" position={[0, -3, 6]} scale={[12, 12, 1]} />
+        <Lightformer intensity={0.9} color="#6f9bff" form="ring" position={[-5, 4, 3]} scale={2.5} />
+        <Lightformer intensity={0.5} color="#3f74d6" form="ring" position={[5, 3, -3]} scale={2} />
+      </Environment>
 
       {/* ── Debug Helpers ── */}
       {DEBUG && (
